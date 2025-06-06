@@ -165,7 +165,10 @@ function initializeApp() {
     const stopButton = document.getElementById("stop");
 
     if (startButton) {
-      startButton.addEventListener("click", startStreaming);
+      startButton.addEventListener("click", () => {
+        console.log("DEBUG: Start button clicked!");
+        startStreaming();
+      });
     } else {
       console.error("Start button not found");
     }
@@ -252,6 +255,8 @@ function updateTimerDisplay() {
 
 // Start streaming audio
 async function startStreaming() {
+  console.log("DEBUG: startStreaming() called");
+  
   const startButton = document.getElementById("start");
   const stopButton = document.getElementById("stop");
 
@@ -260,6 +265,8 @@ async function startStreaming() {
 
   isRecording = true;
   updateStatus("Connected", "connected");
+  
+  console.log("DEBUG: About to create WebSocketEventManager");
 
   // Create WebSocket manager without fallback
   wsManager = new WebSocketEventManager();
@@ -272,24 +279,27 @@ async function startStreaming() {
   // Pass the current system prompt to the WebSocketEventManager
   wsManager.setSystemPrompt(systemPrompt);
   console.log("System prompt passed to WebSocketManager");
+  console.log("DEBUG: About to request microphone access");
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         channelCount: 1, // Mono
-        sampleRate: 16000, // 16kHz
         sampleSize: 16, // 16-bit
         echoCancellation: true, // Enable echo cancellation
         noiseSuppression: true, // Enable noise suppression
         autoGainControl: true, // Enable automatic gain control
       },
     });
+    
+    console.log("DEBUG: Microphone access granted, starting timer");
 
-    // Create AudioContext for processing
+    // Create AudioContext for processing (let browser choose optimal sample rate)
     const audioContext = new AudioContext({
-      sampleRate: 16000,
       latencyHint: "interactive",
     });
+
+    console.log(`DEBUG: AudioContext created with sample rate: ${audioContext.sampleRate}Hz`);
 
     // Create MediaStreamSource
     const source = audioContext.createMediaStreamSource(stream);
@@ -315,15 +325,35 @@ async function startStreaming() {
     processor.onaudioprocess = (e) => {
       const inputData = e.inputBuffer.getChannelData(0);
 
+      // The input sample rate is the AudioContext's sample rate
+      const inputSampleRate = audioContext.sampleRate;
+      const outputSampleRate = 16000; // Backend expects 16kHz
+      
+      let processedData = inputData;
+      
+      // If sample rates don't match, we need to resample
+      if (inputSampleRate !== outputSampleRate) {
+        // Simple decimation for downsampling (basic resampling)
+        const ratio = inputSampleRate / outputSampleRate;
+        const outputLength = Math.floor(inputData.length / ratio);
+        const resampledData = new Float32Array(outputLength);
+        
+        for (let i = 0; i < outputLength; i++) {
+          const sourceIndex = Math.floor(i * ratio);
+          resampledData[i] = inputData[sourceIndex];
+        }
+        processedData = resampledData;
+      }
+
       // Convert Float32Array to Int16Array
-      const pcmData = new Int16Array(inputData.length);
-      for (let i = 0; i < inputData.length; i++) {
+      const pcmData = new Int16Array(processedData.length);
+      for (let i = 0; i < processedData.length; i++) {
         // Convert float to 16-bit integer
-        const s = Math.max(-1, Math.min(1, inputData[i]));
+        const s = Math.max(-1, Math.min(1, processedData[i]));
         pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
       }
 
-      // Calculate audio level for this chunk
+      // Calculate audio level for this chunk (use original data for speech detection)
       const audioLevel = Math.max(...Array.from(inputData).map(Math.abs));
 
       // Speech detection logic
@@ -394,6 +424,7 @@ async function startStreaming() {
     };
 
     // Start session timer
+    console.log("DEBUG: About to call startSessionTimer()");
     startSessionTimer();
   } catch (error) {
     console.error("Error accessing microphone:", error);
@@ -495,15 +526,19 @@ async function updateTranscript(history) {
 
 // Start the session timer
 function startSessionTimer() {
+  console.log("DEBUG: startSessionTimer() called");
   sessionTime = 0;
 
   sessionTimer = setInterval(() => {
     // Update session time
     sessionTime++;
+    console.log("DEBUG: Timer tick, sessionTime:", sessionTime);
 
     // Update the timer display
     updateTimerDisplay();
   }, 1000);
+  
+  console.log("DEBUG: Timer interval created with ID:", sessionTimer);
 }
 
 // Handle audio received from the websocket
