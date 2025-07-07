@@ -13,4 +13,4 @@ RUN apk add --update jq curl py-pip inotify-tools && \
 RUN chmod +x entrypoint.sh
 
 # Use correct path: /app/entrypoint.sh (via WORKDIR)
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./backend/entrypoint.sh"]
