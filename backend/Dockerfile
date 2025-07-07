@@ -2,19 +2,29 @@ FROM python:3.13-alpine
 
 WORKDIR /app
 
-# Copy all the files under backend
-COPY . ./
+# Copy all backend files
+COPY . .
 
-# Install dependencies
-RUN apk add --update jq curl py-pip inotify-tools
+# Ensure proper shell style & execution permissions
+# - Converts CRLF to LF using sed if needed
+# - Makes the script executable
+RUN sed -i 's/\r$//' entrypoint.sh \
+ && chmod +x entrypoint.sh \
+ && ls -l entrypoint.sh \
+ && head -n 1 entrypoint.sh
+
+# Install OS dependencies
+RUN apk add --no-cache jq curl py-pip inotify-tools
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the WebSocket port
+# Expose WebSocket and MCP ports
 EXPOSE 80
+EXPOSE 8000
 
+# Default environment settings
 ENV LOGLEVEL=INFO
-
 ENV MCP_PORT=8000
 
-RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
