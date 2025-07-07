@@ -17,4 +17,4 @@ ENV LOGLEVEL=INFO
 ENV MCP_PORT=8000
 
 RUN chmod +x entrypoint.sh
-ENTRYPOINT ["./backend/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
