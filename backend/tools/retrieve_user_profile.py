@@ -28,7 +28,7 @@ load_dotenv()
 
 defaultResponse = {
     "status": "error",
-    "response": "Sorry we couldn't locate you in our records with phone# {phone_number}. Could you please check your details again?",
+    "response": "Sorry we couldn't associate the relevant volunteers and volunteering opportunities in our records with the area: {areaCoverage}. Could you provide an alternative area?",
 }
 
 
@@ -46,12 +46,12 @@ def get_dynamodb_table_name():
     return table_name
 
 
-def lookup_phone_number(phone_number: str):
+def lookup_area(areaCoverage: str):
     """
-    Looks up a phone number in DynamoDB where the phone number is the primary key.
+    Looks up associated volunteers and category in DynamoDB where the areaCoverage is the primary key.
 
     Args:
-        phone_number (str): The phone number to look up
+        areaCoverage (str): The area, available volunteers and categories to look up
 
     Returns:
         dict: The item found in DynamoDB
@@ -71,15 +71,15 @@ def lookup_phone_number(phone_number: str):
         table = dynamodb.Table(table_name)
 
         # Get the user info from the table
-        response = table.get_item(Key={"phone_number": phone_number})
+        response = table.get_item(Key={"areaCoverage": areaCoverage})
 
         # Check if the item was found
         if "Item" in response:
             return response["Item"]
         else:
-            logger.info(f"No DDB entry found for phone number")
-            # set the phone number received for look up and send message back to Sonic that we couldn't locate it in our records. Could you please check your details again?
-            defaultResponse["phone_number"] = phone_number
+            logger.info(f"No DDB entry found for area specified")
+            # set the area received for look up and send message back to Sonic that we couldn't locate it in our records. Could you provide an alternative area?
+            defaultResponse["areaCoverage"] = areaCoverage
             return defaultResponse
 
     except (ProfileNotFound, NoCredentialsError) as e:
@@ -113,46 +113,46 @@ def lookup_phone_number(phone_number: str):
         raise RuntimeError(f"Error querying DynamoDB: {error_message}")
 
 
-def main(phone_number: str):
+def main(areaCoverage: str):
     """
-    Main function to process phone number lookup requests.
+    Main function to process area lookup requests.
 
     Args:
-        phone_number (str): The phone number to look up
+        areaCoverage (str): The area specified to look up
 
     Returns:
         dict: The lookup result if successful
         int: Error code (1) if an error occurred
     """
-    if not phone_number:
-        logger.error("No phone number provided")
-        error = {"error": "No phone number provided"}
+    if not areaCoverage:
+        logger.error("No area provided")
+        error = {"error": "No area provided"}
         print(json.dumps(error, indent=2))
         return 1
 
     try:
         # Sanitize the phone number
-        clean_number = str(phone_number).replace("-", "").strip()
+        clean_area = str(areaCoverage).replace("-", "").strip()
 
-        if not clean_number.isdigit():
-            logger.debug(f"Invalid phone number format.")
+        if not clean_area.isdigit():
+            logger.debug(f"Invalid area format.")
             return 1
 
         # Attempt to look up the phone number
-        result = lookup_phone_number(clean_number)
+        result = lookup_area(clean_area)
 
         # Prepare and return the result
         if result:
             output = {
-                "phone_number": phone_number,
-                "clean_number": clean_number,
+                "area": areaCoverage,
+                "clean_area": clean_area,
                 "found": True,
                 "data": result,
             }
         else:
             output = {
-                "phone_number": phone_number,
-                "clean_number": clean_number,
+                "area": areaCoverage,
+                "clean_number": clean_area,
                 "found": False,
             }
 
@@ -181,7 +181,7 @@ def main(phone_number: str):
 
     except Exception as e:
         # Catch-all for unexpected errors
-        logger.exception(f"Unexpected error in phone number lookup: {str(e)}")
+        logger.exception(f"Unexpected error in area lookup: {str(e)}")
         error = {"error": f"Unexpected error: {str(e)}"}
         print(json.dumps(error, indent=2))
         return 1
@@ -189,7 +189,7 @@ def main(phone_number: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python script.py <phone_number>")
+        print("Usage: python script.py <areaCoverage>")
         sys.exit(1)
 
     phone_number = sys.argv[1]
