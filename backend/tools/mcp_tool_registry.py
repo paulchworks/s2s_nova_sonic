@@ -43,16 +43,16 @@ async def lookup_tool(
 # User Profile Search Tool
 @mcp_server.tool(
     name="userProfileSearch",
-    description="Search for a user's account and phone plan information by phone number"
+    description="Search for available volunteers and their categories of activities that matches user's area"
 )
 async def user_profile_search_tool(
-    phone_number: Annotated[Union[int, str], Field(description="the user's phone number")]
+    areaCoverage: Annotated[Union[int, str], Field(description="the user's area")]
 ) -> dict:
     """Search for user profile and account information"""
     try:
-        phone_str = str(phone_number)
-        # logger.info(f"User profile search for: {phone_str}")
-        results = retrieve_user_profile.main(phone_str)
+        area_str = str(areaCoverage)
+        logger.info(f"User profile search for: {area_str}")
+        results = retrieve_user_profile.main(area_str)
         return results  
     except Exception as e:
         logger.error(f"Error in user profile search: {str(e)}", exc_info=True)

@@ -134,9 +134,9 @@ def main(areaCoverage: str):
         # Sanitize the phone number
         clean_area = str(areaCoverage).replace("-", "").strip()
 
-        if not clean_area.isdigit():
-            logger.debug(f"Invalid area format.")
-            return 1
+        #if not clean_area.isdigit():
+        #    logger.debug(f"Invalid area format.")
+        #    return 1
 
         # Attempt to look up the phone number
         result = lookup_area(clean_area)
@@ -192,5 +192,5 @@ if __name__ == "__main__":
         print("Usage: python script.py <areaCoverage>")
         sys.exit(1)
 
-    phone_number = sys.argv[1]
-    sys.exit(main(phone_number))
+    areaCoverage = sys.argv[1]
+    sys.exit(main(areaCoverage))
