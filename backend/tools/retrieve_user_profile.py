@@ -131,7 +131,7 @@ def main(areaCoverage: str):
         return 1
 
     try:
-        # Sanitize the phone number
+        # Sanitize the area
         clean_area = str(areaCoverage).replace("-", "").strip()
 
         #if not clean_area.isdigit():

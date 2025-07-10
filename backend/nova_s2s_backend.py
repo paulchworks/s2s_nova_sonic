@@ -325,7 +325,8 @@ class BedrockStreamManager:
                                                 "type": "TOOL",
                                                 "role": "TOOL",
                                                 "toolResultInputConfiguration": {
-                                                    "toolUseId": self.toolUseId,
+                                                    "toolContent": self.toolUseId,
+                                                    "toolUseId": toolContent,
                                                     "type": "TEXT",
                                                     "textInputConfiguration": {
                                                         "mediaType": "text/plain"
