@@ -53,7 +53,13 @@ async def user_profile_search_tool(
         area_str = str(areaCoverage)
         logger.info(f"User profile search for: {area_str}")
         results = retrieve_user_profile.main(area_str)
-        return results  
+        
+        # ✅ Always wrap result in dict
+        if not isinstance(results, dict):
+            results = {"result": results}
+
+        return results
+      
     except Exception as e:
         logger.error(f"Error in user profile search: {str(e)}", exc_info=True)
         return {"status": "error", "error": str(e)}
