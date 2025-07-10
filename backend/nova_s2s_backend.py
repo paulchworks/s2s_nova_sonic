@@ -380,6 +380,7 @@ class BedrockStreamManager:
                                             }
                                         }
                                     }
+                                    logger.info(f"Sending tool content end event: {toolContent}")
                                     await self.send_raw_event(
                                         json.dumps(tool_content_end_event)
                                     )
