@@ -315,6 +315,8 @@ class BedrockStreamManager:
 
                                     logger.info(f"Tool Use Id {toolContent}")
 
+                                    toolUseId = toolContent
+
                                     # Send tool start event
                                     tool_start_event = {
                                         "event": {
@@ -325,8 +327,7 @@ class BedrockStreamManager:
                                                 "type": "TOOL",
                                                 "role": "TOOL",
                                                 "toolResultInputConfiguration": {
-                                                    "toolContent": self.toolUseId,
-                                                    "toolUseId": toolContent,
+                                                    "toolUseId": toolUseId,
                                                     "type": "TEXT",
                                                     "textInputConfiguration": {
                                                         "mediaType": "text/plain"
