@@ -303,7 +303,9 @@ class BedrockStreamManager:
                                 ):
                                     logger.info(
                                         "Processing tool use and sending result"
-                                    )
+                                    ) 
+                                    #from here the dataflow went to <Processing tool use: userprofilesearch> below,
+                                    #then to <User profile search for: > imported from mcp_tool_registry
 
                                     # Process the tool use using the registry
                                     toolResult = await self.processToolUse(
@@ -380,13 +382,14 @@ class BedrockStreamManager:
                                             }
                                         }
                                     }
+                                    logger.info(f"Tool content end event: {tool_content_end_event}")
                                     logger.info(f"Sending tool content end event: {toolContent}")
                                     await self.send_raw_event(
                                         json.dumps(tool_content_end_event)
                                     )
 
                             # Put the response in the output queue for forwarding to the frontend
-                            logger.debug(f"json_data to output_queue: {json_data}")
+                            logger.info(f"json_data to output_queue: {json_data}")
                             await self.output_queue.put(json_data)
                         except json.JSONDecodeError:
                             await self.output_queue.put({"raw_data": response_data})
