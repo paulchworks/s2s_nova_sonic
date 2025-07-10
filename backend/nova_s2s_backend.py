@@ -386,6 +386,7 @@ class BedrockStreamManager:
                                     )
 
                             # Put the response in the output queue for forwarding to the frontend
+                            logger.debug(f"json_data to output_queue: {json_data}")
                             await self.output_queue.put(json_data)
                         except json.JSONDecodeError:
                             await self.output_queue.put({"raw_data": response_data})
