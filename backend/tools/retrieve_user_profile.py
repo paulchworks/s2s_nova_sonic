@@ -157,6 +157,7 @@ def main(areaCoverage: str):
                 "clean_number": clean_area,
                 "found": False,
             }
+        logger.info(f"Output from area lookup: {output}")
 
         return result
 
