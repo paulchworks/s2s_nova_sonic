@@ -309,6 +309,9 @@ class BedrockStreamManager:
                                     toolResult = await self.processToolUse(
                                         self.toolName, self.toolUseContent
                                     )
+                                    logger.info(
+                                        f"Tool result for {self.toolName}: {toolResult}"
+                                    )
 
                                     # Create a unique content name for this tool result
                                     toolContent = str(uuid.uuid4())
@@ -352,7 +355,7 @@ class BedrockStreamManager:
                                     else:
                                         content_json_string = str(toolResult)
                                         status = "success"
-                                    # logger.info(f"Tool result {toolResult} and value of status is {status}")
+                                    logger.info(f"Tool result {toolResult} and value of status is {status}")
 
                                     tool_result_event = {
                                         "event": {
@@ -410,6 +413,7 @@ class BedrockStreamManager:
         
         # Process the tool
         result = await handle_bedrock_tool_call(tool_name, toolUseContent)
+        logger.info(f"Tool {tool_name} processed with result: {result}")
         
         return result
 

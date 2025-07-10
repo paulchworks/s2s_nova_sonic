@@ -72,6 +72,7 @@ def lookup_area(areaCoverage: str):
 
         # Get the user info from the table
         response = table.get_item(Key={"areaCoverage": areaCoverage})
+        logger.info(f"Item returned from Dynamo DB search: {response}")
 
         # Check if the item was found
         if "Item" in response:
@@ -140,6 +141,7 @@ def main(areaCoverage: str):
 
         # Attempt to look up the phone number
         result = lookup_area(clean_area)
+        logger.info(f"Result from lookup_area: {result}")
 
         # Prepare and return the result
         if result:
