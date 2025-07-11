@@ -591,7 +591,7 @@ function createHtmlStructure() {
       </div>
 
       <div class="footer">
-        <div>Voice Chat Interface v1.0</div>
+        <div>eServ Voicebot Interface v1.0</div>
       </div>
     </div>
   `;
