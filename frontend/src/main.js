@@ -561,7 +561,7 @@ function createHtmlStructure() {
           <div id="status" class="disconnected">Disconnected</div>
           <div class="button-container">
             <button id="logout-button" class="button">Logout</button>
-            <button id="show-prompt-button" class="button">Show Prompt</button>
+            /*<button id="show-prompt-button" class="button">Show Prompt</button>*/
             <button id="start" class="button">Start Session</button>
             <button id="stop" class="button" disabled>Stop Session</button>
           </div>
