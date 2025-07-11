@@ -22,9 +22,14 @@
       margin: 0;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       font-size: 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       overflow-x: hidden;
+      padding: 2rem;
     }
 
     a {
@@ -45,15 +50,18 @@
     }
 
     #app {
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 2rem;
-      text-align: center;
       width: 100%;
-      height: 100%;
+      max-width: 960px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      padding: 2rem;
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
       gap: 1.5rem;
+      backdrop-filter: blur(20px);
     }
 
     .header {

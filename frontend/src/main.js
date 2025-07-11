@@ -552,7 +552,7 @@ function createHtmlStructure() {
   document.body.innerHTML = `
     <div id="app">
       <div class="header">
-        <h1>Call Center Assistant Playground</h1>
+        <h1>AI Buddy</h1>
         <div class="header-controls">
           <div class="timer-container">
             <div class="timer-icon">🕐</div>
