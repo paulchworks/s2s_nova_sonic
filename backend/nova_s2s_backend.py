@@ -303,16 +303,11 @@ class BedrockStreamManager:
                                 ):
                                     logger.info(
                                         "Processing tool use and sending result"
-                                    ) 
-                                    #from here the dataflow went to <Processing tool use: userprofilesearch> below,
-                                    #then to <User profile search for: > imported from mcp_tool_registry
+                                    )
 
                                     # Process the tool use using the registry
                                     toolResult = await self.processToolUse(
                                         self.toolName, self.toolUseContent
-                                    )
-                                    logger.info(
-                                        f"Tool result for {self.toolName}: {toolResult}"
                                     )
 
                                     # Create a unique content name for this tool result
@@ -348,29 +343,16 @@ class BedrockStreamManager:
                                         content_json_string = json.dumps(toolResult)
                                     else:
                                         content_json_string = str(toolResult)
-                                    
-                                    # Determine status based on tool result
-                                    if hasattr(toolResult, 'to_dict'):
-                                         tool_dict = toolResult.to_dict()
-                                         content_json_string = json.dumps(tool_dict)
-                                         status = "error" if tool_dict.get("status") == "error" else "success"
-                                    elif isinstance(toolResult, dict):
-                                         content_json_string = json.dumps(toolResult)
-                                         status = "error" if toolResult.get("status") == "error" else "success"
-                                    else:
-                                         logger.error(f"Unexpected tool result type: {type(toolResult)}")
-                                         content_json_string = json.dumps({"error": "Invalid tool result"})
-                                         status = "error"
 
                                     # check if tool use resulted in an error that needs to be reported to Sonic
-                                    #if isinstance(toolResult, dict):
-                                    #    content_json_string = json.dumps(toolResult)
+                                    if isinstance(toolResult, dict):
+                                        content_json_string = json.dumps(toolResult)
                                         # Simple error check - only if it's a dict and has a status field
-                                    #    status = "error" if toolResult.get("status") == "error" else "success"
-                                    #else:
-                                    #    content_json_string = str(toolResult)
-                                    #    status = "success"
-                                    logger.info(f"Tool result {toolResult} and value of status is {status}")
+                                        status = "error" if toolResult.get("status") == "error" else "success"
+                                    else:
+                                        content_json_string = str(toolResult)
+                                        status = "success"
+                                    # logger.info(f"Tool result {toolResult} and value of status is {status}")
 
                                     tool_result_event = {
                                         "event": {
@@ -395,14 +377,11 @@ class BedrockStreamManager:
                                             }
                                         }
                                     }
-                                    logger.info(f"Tool content end event: {tool_content_end_event}")
-                                    logger.info(f"toolContent: {toolContent}")
                                     await self.send_raw_event(
                                         json.dumps(tool_content_end_event)
                                     )
 
                             # Put the response in the output queue for forwarding to the frontend
-                            logger.info(f"json_data to output_queue: {json_data}")
                             await self.output_queue.put(json_data)
                         except json.JSONDecodeError:
                             await self.output_queue.put({"raw_data": response_data})
@@ -431,7 +410,6 @@ class BedrockStreamManager:
         
         # Process the tool
         result = await handle_bedrock_tool_call(tool_name, toolUseContent)
-        logger.info(f"Tool {tool_name} processed with result: {result}")
         
         return result
 
