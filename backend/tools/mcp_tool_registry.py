@@ -43,7 +43,7 @@ async def lookup_tool(
 # User Profile Search Tool
 @mcp_server.tool(
     name="userProfileSearch",
-    description="Search for a user's account and phone plan information by phone number"
+    description="Search for a user's records and involvement with the organization by phone number"
 )
 async def user_profile_search_tool(
     phone_number: Annotated[Union[int, str], Field(description="the user's phone number")]
