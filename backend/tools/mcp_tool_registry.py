@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 # Knowledge Base Lookup Tool
 @mcp_server.tool(
     name="lookup",
-    description="Runs query against a knowledge base to retrieve information."
+    description="Runs query against a knowledge base about MINDS to retrieve information."
 )
 async def lookup_tool(
     query: Annotated[str, Field(description="the query to search")]
