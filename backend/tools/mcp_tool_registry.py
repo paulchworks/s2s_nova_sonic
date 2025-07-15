@@ -73,10 +73,10 @@ async def case_creation_tool(
 ) -> dict:
     """Search for user profile and account information"""
     try:
-        phone_str = str(phone_number)
-        summary_str = str(summary)
-        volunteerInterest_str = str(volunteerInterest)
-        area_str = str(area)
+        phone_number = str(phone_number)
+        summary = str(summary)
+        volunteerInterest = str(volunteerInterest)
+        area = str(area)
         # logger.info(f"User profile search for: {phone_str}")
         results = case_creation.main(summary, volunteerInterest, phone_number, area, sentiment)
         return results  
