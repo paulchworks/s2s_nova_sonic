@@ -69,7 +69,8 @@ async def case_creation_tool(
     volunteerInterest: Annotated[Union[int, str], Field(description="volunteer interest")],
     phone_number: Annotated[Union[int, str], Field(description="caller contact number")],
     area: Annotated[Union[int, str], Field(description="caller area")],
-    sentiment: Annotated[Union[int, str], Field(description="caller sentiment")]
+    #sentiment: Annotated[Union[int, str], Field(description="caller sentiment")]
+    sentiment = "neutral"
 ) -> dict:
     """Search for user profile and account information"""
     try:
@@ -77,9 +78,10 @@ async def case_creation_tool(
         summary = str(summary)
         volunteerInterest = str(volunteerInterest)
         area = str(area)
+        sentiment = str(sentiment)
         # logger.info(f"User profile search for: {phone_str}")
         results = case_creation.main(summary, volunteerInterest, phone_number, area, sentiment)
-        return results  
+        return results
     except Exception as e:
-        logger.error(f"Error in user profile search: {str(e)}", exc_info=True)
+        logger.error(f"Error in creating case: {str(e)}", exc_info=True)
         return {"status": "error", "error": str(e)}

@@ -38,7 +38,7 @@ def main(summary, volunteerInterest, phone_number, area, sentiment):
                 "project": {
                     "key": PROJECT_KEY
                 },
-                "summary": f"New request about {volunteerInterest} was triggered on {now} by Digital Concierge Agent",
+                "summary": f"New request about {volunteerInterest} was triggered on {now} by Digital Concierge Agent (NovaSonic)",
                 "description": f"Summary:\n{summary}\n\nCaller Contact No: {phone_number}\nArea: {area}\nSentiment: {sentiment}",
                 "issuetype": {
                     "id": ISSUE_TYPE_ID
@@ -65,7 +65,7 @@ def main(summary, volunteerInterest, phone_number, area, sentiment):
         
         response_body = {
             'TEXT': {
-                'body': f'The function {function} was called successfully with parameters: {summary}!'
+                'body': f'The case creation tool was called successfully with details: {summary}!'
             }
         }
         output = {
@@ -83,5 +83,11 @@ def main(summary, volunteerInterest, phone_number, area, sentiment):
         return 1
 
 
-if __name__ == "__main__":
-    sys.exit(main("Create a case for with the conversation summary"))
+#if __name__ == "__main__":
+#    test_summary = "Test case"
+#    test_volunteerInterest = "Food Distribution"
+#    test_phone_number = "+6591234567"
+#    test_area = "Ang Mo Kio"
+#    test_sentiment = "Positive"
+#    sys.exit(main(test_summary, test_volunteerInterest, test_phone_number, test_area, test_sentiment))
+
