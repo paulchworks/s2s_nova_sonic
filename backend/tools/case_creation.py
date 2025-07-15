@@ -46,6 +46,7 @@ def main(summary, volunteerInterest, phone_number, area, sentiment):
                 }
             }
         })
+        logger.info(f"Payload for JIRA API call: {payload}")
         
         # Define headers
         headers = {
