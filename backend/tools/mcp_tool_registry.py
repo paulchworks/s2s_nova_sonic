@@ -20,6 +20,7 @@ from mcp_server import mcp_server
 import logging
 from . import knowledge_base_lookup
 from . import retrieve_user_profile
+from . import case_creation
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,31 @@ async def user_profile_search_tool(
         phone_str = str(phone_number)
         # logger.info(f"User profile search for: {phone_str}")
         results = retrieve_user_profile.main(phone_str)
+        return results  
+    except Exception as e:
+        logger.error(f"Error in user profile search: {str(e)}", exc_info=True)
+        return {"status": "error", "error": str(e)}
+
+# Case Creation Tool
+@mcp_server.tool(
+    name="CaseCreation",
+    description="Send the summary of a conversation to JIRA for further processing"
+)
+async def case_creation_tool(
+    summary: Annotated[Union[int, str], Field(description="conversation summary")],
+    volunteerInterest: Annotated[Union[int, str], Field(description="volunteer interest")],
+    phone_number: Annotated[Union[int, str], Field(description="caller contact number")],
+    area: Annotated[Union[int, str], Field(description="caller area")],
+    sentiment: Annotated[Union[int, str], Field(description="caller sentiment")]
+) -> dict:
+    """Search for user profile and account information"""
+    try:
+        phone_str = str(phone_number)
+        summary_str = str(summary)
+        volunteerInterest_str = str(volunteerInterest)
+        area_str = str(area)
+        # logger.info(f"User profile search for: {phone_str}")
+        results = case_creation.main(summary, volunteerInterest, phone_number, area, sentiment)
         return results  
     except Exception as e:
         logger.error(f"Error in user profile search: {str(e)}", exc_info=True)
