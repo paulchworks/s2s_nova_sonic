@@ -13,6 +13,7 @@ from typing import Dict, Any
 from http import HTTPStatus
 from dotenv import load_dotenv
 
+logger = logging.getLogger(__name__)
 
 def main(summary, volunteerInterest, phone_number, area, sentiment):
     # Load environment variables from .env file
@@ -60,8 +61,8 @@ def main(summary, volunteerInterest, phone_number, area, sentiment):
             auth=HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
         )
 
-        print(f"Status Code: {jira_response.status_code}")
-        print(json.dumps(jira_response.json(), indent=4))
+        logger.info(f"Status code of JIRA API call: {jira_response.status_code}")
+        logger.info(json.dumps(jira_response.json(), indent=4))
         
         response_body = {
             'TEXT': {
@@ -75,6 +76,7 @@ def main(summary, volunteerInterest, phone_number, area, sentiment):
                 "Content-Type": "application/json"
             }
         }
+        logger.info(f"Output from JIRA API call: {output}")
         return output
 
     except Exception as e:
